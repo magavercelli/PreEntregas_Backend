@@ -1,0 +1,77 @@
+import { Router } from 'express';
+import ProductManager from '../managers/ProductManager.js';
+
+const path = 'products.json';
+const router = Router();
+const productManager = new ProductManager(path);
+
+router.get('/', async (req,res) => {
+    try {
+        const limit = req.query.limit
+        const products = await productManager.getProducts();
+
+        if(limit){
+            const productFilter = products.slice(0, limit)
+            return res.json (productFilter);
+        }
+        return res.json (products);
+    } catch (error) {
+        console.log('Error:', error);
+    }
+})
+
+router.get('/:pid', async (req,res) => {
+    try {
+        const productId = req.params.pid;
+        const product = await productManager.getProductById(productId);
+
+        if (product !== 'Not found') {
+            res.json(product);
+        } else {
+            res.send({ 
+                error: 'Product not found' });
+        }
+        
+    } catch (error) {
+        console.log('Error:', error);
+    }
+    
+})
+
+router.post('/', async(req,res) => {
+    const product = req.body;
+
+    const addPro = await productManager.addProduct(product);
+    res.json(addPro);
+})
+
+router.put('/:pid', async(req,res) => {
+    const productId = req.params.pid;
+    const product = req.body;
+
+    const updatedProduc = await productManager.updateProduct(productId, product);
+    res.json(updatedProduc);
+})
+
+router.delete ('/:pid', async(req,res) => {
+
+    try {
+        const idProduct = req.params.pid;
+        const deletedProduct = await productManager.deleteProduct(idProduct);
+
+        if (deletedProduct !== 'Product not found') {
+            res.json(deletedProduct);
+        } else {
+            res.send({ 
+                error: 'Product not found' 
+            });
+        }
+        
+    } catch (error) {
+        console.log('Error:', error);
+    }
+
+    
+})
+
+export {router as productRoute};
