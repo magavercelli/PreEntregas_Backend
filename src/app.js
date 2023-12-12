@@ -1,6 +1,7 @@
 import express from 'express';
 import {engine} from 'express-handlebars';
 import {Server} from 'socket.io';
+import __dirname from './utils.js';
 import { realtimeproducts } from './routes/realtimeproducts.route.js';
 import { productRoute } from './routes/product.route.js';
 import { cartRoute } from './routes/cart.route.js';
@@ -17,10 +18,10 @@ const socketServer = new Server(httpServer);
 
 app.engine('handlebars', engine());
 
-app.set('view', 'handlebars');
+app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
-socketServer.on('connectio', socket =>{
+socketServer.on('connection', socket =>{
     console.log('Nuevo cliente conectado');
     socket.on('message', data => { // MODIFICAR
         console.log(data);

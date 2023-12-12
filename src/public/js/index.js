@@ -1,3 +1,6 @@
 const socket = io();
 
-socket.emit('message', 'Mensaje desde el Front'); // MODIFICAR
+
+socket.on('nuevo_producto', data => {
+    console.log('Nuevo producto:', data.producto);
+  });
