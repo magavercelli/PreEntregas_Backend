@@ -1,12 +1,12 @@
-<h1>Todos los Productos</h1>
+<h1>Lista de Productos</h1>
 <div>
     <ul>
         {{#each products}}
-        <li> {{this.title}}: {{this.price}}</li>
+        <li> {{this.title}} : {{this.description}} : {{this.price}}</li>
         {{/each}}
     </ul>
    
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+{{!-- <script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script> --}}

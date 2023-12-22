@@ -1,14 +1,22 @@
-{{!-- <div>
-    <form action="/api/products" method="post">
-    <div>
-        <label>Ingrese el producto a eliminar</label>
-        <input type="text" id="product-form">
-    </div>
-    <div>
-        <label>Ingrese un texto</label>
-        <input type="text" id="chat-input" name="chat-input">
-        <p id="input-message"></p>
-    </div>
-       
-    </form>
-</div> --}}
+<div>
+    <h1>Productos en tiempo real</h1>
+</div>
+
+<div>
+    <h2>Lista de Productos: </h2>
+</div>
+ <div id="products-add">
+    <ul >
+        {{#each products}}
+        <li>Producto: {{title}}</li>
+        <li>Descripción: {{description}}</li>
+        <li>Precio :{{price}}</li>
+
+        {{/each}}
+    </ul>
+    
+ </div>
+    
+    
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
