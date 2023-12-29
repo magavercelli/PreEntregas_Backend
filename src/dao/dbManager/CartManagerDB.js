@@ -1,78 +1,152 @@
-import fs from 'fs';
-import path from 'path';
-import __dirname from '../utils.js';
+import cartsModel from '../models/cart.model.js';
+import productModel from '../models/product.model.js';
 
 export default class CartManager {
-    constructor(pathFile){
-        this.carts = [];
-        this.path = path.join(__dirname, `/files/${pathFile}`)
-    }
-
+    
     getCarts = async () => {
-        if(fs.existsSync(this.path)){
-            const data =  await fs.promises.readFile(this.path, 'utf-8');
-            const response = JSON.parse(data);
-            return response;
-        }else{
-            return [];
-        }
-       
+        const carts = await cartsModel.find();
+        return carts;
+      
     }
 
-    getCartProductById= async (idCart) => {
-        const carts = await this.getCarts();
-        const cart = carts.find(cart => cart.id == idCart);
-        if (cart) {
-            return cart;
-        } else {
-            return 'Cart not found';
-        }
-
+    getCartById= async (cid) => {
+        const carts = await cartsModel.find({_id: cid})
+        return carts;
     }
 
     addNewCart = async () => {
         try { 
-            this.carts =await this.getCarts();
-
-            const id = this.carts.length +1;
-
-            let newCart = {
-                id,
-                products: []
-            };
-
-            this.carts.push (newCart);
-            await fs.promises.writeFile(this.path, JSON.stringify(this.carts));
-            return newCart;
-
+           const cart = await cartsModel.create({});
+           return cart;
         } catch (error) {
             console.log ('Error');
         }
         
     }
 
-    addProductToCart = async (cartId, productId) => {
+    addProductToCart = async (cid, pid, quantity = 1) => {
         try {
-            this.carts = await this.getCarts(); 
-            const index = this.carts.findIndex(cart => cart.id == cartId);
-            if(index !== -1){
-                let cartProducts = this.carts [index].products;
-                const indexProduct = cartProducts.findIndex(product => product.productId === productId);
-                if(indexProduct !== -1){
-                    cartProducts[indexProduct].quantity += 1;
-                }else{
-                    cartProducts.push ({productId, quantity: 1});
+            const cart = await cartsModel.findOne({_id: cid});
+            if (!cart){
+                return{
+                    status : 'error',
+                    msg: `Cart wiht id ${cid} doesn't exist`
                 }
-
-                this.carts[index].products = cartProducts;
             }
-                        
-            await fs.promises.writeFile(this.path, JSON.stringify(this.carts));
-            return this.carts [index];
+
+            const product = await productModel.findOne({_id:pid});
+            if (!product){
+                return{
+                    status : 'error',
+                    msg: `Product wiht id ${pid} doesn't exist`
+                }
+            };
+
+            let productsInCart = cart.product;
+            const indexProduct = productsInCart.findIndex((product)=> product.product == pid);
+           if(indexProduct == -1){
+
+            const newProduct = {
+                product : pid,
+                quantity: quantity
+            }
+            cart.product.push(newProduct);
+           }else {
+            cart.product[indexProduct].quantity +=1;
+           }
+
+            await cart.save();
+            return {
+                status: 'success',
+                msg: `The product was added successfully`
+            }
 
         } catch (error) {
-            console.log('Error al intentar agregar el producto al carrito:', error);
+            console.log('Error trying to add product to cart', error);
         }
     }
 
+    updatedCart = async (cid, updatedProduct)=> {
+        try {
+            const cart = await cartsModel.findOne({ _id: cid });
+        
+            if (!cart) {
+              return {
+                status: 'error',
+                msg: `Cart with id ${cid} doesn't exist`
+              };
+            }
+        
+            // Iterar sobre el arreglo de productos actualizados
+            updatedProduct.forEach(updatedProduct => {
+              const { pid, quantity } = updatedProduct;
+        
+              // Buscar el producto en el carrito por su id
+              const cartProductIndex = cart.product.findIndex(item => item.product.toString() === pid);
+        
+              if (cartProductIndex !== -1) {
+                // Si el producto existe en el carrito, actualizar la cantidad
+                cart.product[cartProductIndex].quantity = quantity;
+              } else {
+                // Si el producto no existe en el carrito, agregarlo
+                cart.product.push({
+                  product: pid,
+                  quantity: quantity
+                });
+              }
+            });
+        
+            // Guardar el carrito actualizado
+            await cart.save();
+        
+            return {
+              status: 'success',
+              msg: 'Cart updated successfully'
+            };
+
+          } catch (error) {
+            console.error('Error updating cart:', error);
+            return {
+              status: 'error',
+              msg: 'An error occurred while updating the cart'
+            };
+          }
+        
+    }
+    
+    deleteProductsInCart = async (cid, pid) => {
+        try {
+            const cart = await cartsModel.findOne({_id: cid});
+            if(!cart){
+                return{
+                    status: 'error',
+                    msg: `Cart with id  ${cid} doesn't exist`
+                };
+            }
+
+            const product = await productModel.findOne ({_id: pid});
+
+            if(!product){
+                return {
+                    status: 'error',
+                    msg: `Product with id ${pid} doesn't exist`
+                }
+            }
+
+            cart.product = cart.product.filter((item)=> item.product.toString() !== pid);
+            await cart.save();
+            return {
+                status:'succes',
+                msg: `Product with id ${pid} removed from the cart successfully`
+            }
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            return {
+            status: 'error',
+            msg: 'An error occurred while deleting the product from the cart'
+            };
+            
+        }
+    }
+    
 } 
