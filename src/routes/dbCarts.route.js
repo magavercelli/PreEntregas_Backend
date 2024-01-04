@@ -33,6 +33,12 @@ router.get('/:cid', async (req,res) => {
 
 })
 
+router.get('/carts/:cid', async (req, res) => {
+    const cartId = req.params.cid;
+    const cart = await cartManagerDb.getCartById(cartId);
+    res.render('cart', { cart: cart });
+});
+
 
 router.post ('/', async (req,res)=> {
     const cart = await cartManagerDb.addNewCart();

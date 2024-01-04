@@ -12,7 +12,15 @@ import products from './products.js';
 
 
 const MONGO = 'mongodb+srv://magabrielavercelli:AitYC66JzKrHxPUN@cluster0.azjq6df.mongodb.net/Ecommerce';
-mongoose.connect(MONGO);
+mongoose.connect(MONGO)
+.then(() => {
+    console.log('Conexión a MongoDB exitosa');
+    productModel.insertMany(products)
+        .then(() => console.log('Productos insertados'))
+        .catch(err => console.error('Error al insertar productos:', err));
+})
+.catch(err => console.error('Error al conectar a MongoDB:', err));
+
 
 const PORT = 8080;
 const app = express();
@@ -36,7 +44,6 @@ app.use('/api/carts', cartRoute);
 
 
 app.get('/products', async (req, res) => {
-    console.log('Request to /products received');
     try {
       const limit = req.query.limit;
       const productsData = await prod.getProducts(); 
@@ -52,6 +59,12 @@ app.get('/products', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   });
+
+  app.get('/products/:pid', async (req, res) => {
+    const productId = req.params.pid;
+    const product = await prod.getProductById(productId);
+    res.render('product', { product: product });
+});
 
 const httpServer = app.listen(PORT, () => console.log (`Servidor funcionando en el puerto: ${PORT}`))
 

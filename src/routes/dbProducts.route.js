@@ -10,15 +10,15 @@ router.get('/initial', (req, res) => {
     res.send({ data: products });
 });
 router.get('/', async (req,res)=> {
-
-    try {
-        const data= await productModel.find();
-        res.send({data});
-        
-    } catch (error) {
-        res.status(400).send("Error" + error)
-    }
+    const products = await prod.getProducts();
+    res.render('products', { products: products });
 })
+
+router.get('/products/:pid', async (req, res) => {
+    const productId = req.params.pid;
+    const product = await prod.getProductById(productId);
+    res.render('product', { product: product });
+});
 
 router.post('/', async(req,res)=> {
     const {title, description, price,  thumbnail: [foto1, foto2], code, stock, status, category} = req.body;

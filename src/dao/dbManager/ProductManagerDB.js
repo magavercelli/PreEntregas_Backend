@@ -14,7 +14,9 @@ export default class ProductManagerDB {
 
         let filter = {};
         if (query) {
-            filter = { title: { $regex: query, $options: 'i' } };
+            filter = { title: { $regex: query, $options: 'i' } },
+            { category: { $regex: query, $options: 'i' } },
+            { status: query.toLowerCase() === 'true' }
         }
 
         const result = await productModel.paginate(filter, options);

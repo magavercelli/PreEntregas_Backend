@@ -10,7 +10,7 @@ export default class CartManagerDB {
     }
 
     getCartById= async (cid) => {
-        const cart = await cartsModel.find({_id: cid})
+        const cart = await cartsModel.findById(cid).populate('product.product');
         return cart;
     }
 
@@ -73,8 +73,7 @@ export default class CartManagerDB {
                 msg: `Cart with id ${cid} doesn't exist`
               };
             }
-        
-            // Iterar sobre el arreglo de productos actualizados
+    
             updatedProduct.forEach(updatedProduct => {
               const { pid, quantity } = updatedProduct;
         
