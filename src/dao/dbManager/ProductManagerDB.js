@@ -1,7 +1,7 @@
 import productModel from "../models/product.model.js";
 
 
-export default class ProductManager {
+export default class ProductManagerDB {
     
     getProducts = async (options, filters) => {
         try {

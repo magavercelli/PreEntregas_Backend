@@ -4,10 +4,10 @@
  <div id="products-add">
     <ul >
         {{#each products}}
-        <li>Producto: {{title}}</li>
-        <li>Descripción: {{description}}</li>
-        <li>Precio :{{price}}</li>
-        <li>Categoría : {{category}}</li>
+        <li>Producto: {{this.title}}</li>
+        <li>Descripción: {{this.description}}</li>
+        <li>Precio :{{this.price}}</li>
+        <li>Categoría : {{this.category}}</li>
 
         {{/each}}
     </ul>
@@ -23,3 +23,4 @@
     </div>
     
  </div>
+ 

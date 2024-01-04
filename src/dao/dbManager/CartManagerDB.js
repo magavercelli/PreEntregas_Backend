@@ -1,7 +1,7 @@
 import cartsModel from '../models/cart.model.js';
 import productModel from '../models/product.model.js';
 
-export default class CartManager {
+export default class CartManagerDB {
     
     getCarts = async () => {
         const carts = await cartsModel.find();
@@ -10,8 +10,8 @@ export default class CartManager {
     }
 
     getCartById= async (cid) => {
-        const carts = await cartsModel.find({_id: cid})
-        return carts;
+        const cart = await cartsModel.find({_id: cid})
+        return cart;
     }
 
     addNewCart = async () => {
