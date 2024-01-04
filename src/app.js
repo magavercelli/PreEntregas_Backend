@@ -8,6 +8,7 @@ import { productRoute } from './routes/product.route.js';
 import { cartRoute } from './routes/cart.route.js';
 import ProductManager from './dao/managers/ProductManager.js';
 import productModel from './routes/dbProducts.route.js';
+import products from './products.js';
 
 
 const MONGO = 'mongodb+srv://magabrielavercelli:AitYC66JzKrHxPUN@cluster0.azjq6df.mongodb.net/Ecommerce';
@@ -33,7 +34,9 @@ app.use('/api/products', productRoute);
 app.use('/api/carts', cartRoute);
 
 
+
 app.get('/products', async (req, res) => {
+    console.log('Request to /products received');
     try {
       const limit = req.query.limit;
       const productsData = await prod.getProducts(); 

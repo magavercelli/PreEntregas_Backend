@@ -71,3 +71,5 @@ let products = [
         status: true,
     }
 ]
+
+export default products;

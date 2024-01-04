@@ -4,38 +4,36 @@ import productModel from "../models/product.model.js";
 export default class ProductManagerDB {
     
     getProducts = async (req,res) => {
-        try {
-          const { limit = 10, page = 1, sort = '', query = '' } = req.query;
-          const options = {
-              page: parseInt(page, 10),
-              limit: parseInt(limit, 10),
-              sort: { price: sort === 'desc' ? -1 : 1 }
-          };
+      try {
+        const { limit = 10, page = 1, sort = '', query = '' } = req.query;
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+            sort: sort === 'desc' ? { price: -1 } : sort === 'asc' ? { price: 1 } : null
+        };
 
-          let filter = {};
-          if (query) {
-              filter = { title: { $regex: query, $options: 'i' } };
-          }
+        let filter = {};
+        if (query) {
+            filter = { title: { $regex: query, $options: 'i' } };
+        }
 
-          const result = await productModel.paginate(filter, options);
-          res.json({
-              status: 'success',
-              payload: result.docs,
-              totalPages: result.totalPages,
-              prevPage: result.prevPage,
-              nextPage: result.nextPage,
-              page: result.page,
-              hasPrevPage: result.hasPrevPage,
-              hasNextPage: result.hasNextPage,
-              prevLink: result.prevPage ? `/api/products?page=${result.prevPage}` : null,
-              nextLink: result.nextPage ? `/api/products?page=${result.nextPage}` : null
-          });
-
-
-          } catch (error) {
-            console.error('Error getting products:', error);
-            throw error;
-          }
+        const result = await productModel.paginate(filter, options);
+        res.json({
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.prevPage ? `/api/products?page=${result.prevPage}` : null,
+            nextLink: result.nextPage ? `/api/products?page=${result.nextPage}` : null
+        });
+    } catch (error) {
+        console.error('Error getting products:', error);
+        throw error;
+    }
     }
 
     addProduct = async (product) => {
