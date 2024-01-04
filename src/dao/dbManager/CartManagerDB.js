@@ -52,14 +52,11 @@ export default class CartManagerDB {
             }
             cart.product.push(newProduct);
            }else {
-            cart.product[indexProduct].quantity +=1;
+            cart.product[indexProduct].quantity += quantity;
            }
 
             await cart.save();
-            return {
-                status: 'success',
-                msg: `The product was added successfully`
-            }
+            return cart;
 
         } catch (error) {
             console.log('Error trying to add product to cart', error);
@@ -113,6 +110,32 @@ export default class CartManagerDB {
           }
         
     }
+
+    updateProductQuantity = async (cid, pid, quantity) => {
+        try {
+            const cart = await cartsModel.findOne({ _id: cid });
+    
+            if (!cart) {
+                return {
+                    status: 'error',
+                    msg: `Cart with id ${cid} doesn't exist`
+                };
+            }
+    
+            const productIndex = cart.product.findIndex(item => item.product.toString() === pid);
+    
+            if (productIndex !== -1) {
+                cart.product[productIndex].quantity = quantity;
+                await cart.save();
+                return { status: 'success', msg: 'Product quantity updated successfully' };
+            } else {
+                return { status: 'error', msg: `Product with id ${pid} not found in cart` };
+            }
+        } catch (error) {
+            console.error('Error updating product quantity in cart:', error);
+            throw error;
+        }
+    }
     
     deleteProductsInCart = async (cid, pid) => {
         try {
@@ -146,6 +169,32 @@ export default class CartManagerDB {
             msg: 'An error occurred while deleting the product from the cart'
             };
             
+        }
+    }
+    
+    deleteAllProductsInCart = async (cid) => {
+        try {
+            const cart = await cartsModel.findOne({_id: cid});
+            if (!cart) {
+                return {
+                    status: 'error',
+                    msg: `Cart with id ${cid} doesn't exist`
+                };
+            }
+
+            cart.product = []; // Elimina todos los productos del carrito
+            await cart.save();
+            
+            return {
+                status: 'success',
+                msg: `All products removed from the cart successfully`
+            };
+        } catch (error) {
+            console.error('Error deleting all products from cart:', error);
+            return {
+                status: 'error',
+                msg: 'An error occurred while deleting all products from the cart'
+            };
         }
     }
     

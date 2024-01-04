@@ -10,10 +10,12 @@ import ProductManager from './dao/managers/ProductManager.js';
 import productModel from './routes/dbProducts.route.js';
 
 
-const PORT = 8080;
 const MONGO = 'mongodb+srv://magabrielavercelli:AitYC66JzKrHxPUN@cluster0.azjq6df.mongodb.net/Ecommerce';
-const app = express();
 mongoose.connect(MONGO);
+
+const PORT = 8080;
+const app = express();
+
 
 const prod = new ProductManager();
 
@@ -34,7 +36,7 @@ app.use('/api/carts', cartRoute);
 app.get('/products', async (req, res) => {
     try {
       const limit = req.query.limit;
-      const productsData = await prod.getProducts(); // Asegúrate de obtener los datos de la base de datos o de donde sea necesario
+      const productsData = await prod.getProducts(); 
   
       if (limit) {
         const productFilter = productsData.slice(0, limit);
