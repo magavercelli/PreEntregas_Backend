@@ -7,7 +7,8 @@ import { realtimeproducts } from './routes/realtimeproducts.route.js';
 import { productRoute } from './routes/product.route.js';
 import { cartRoute } from './routes/cart.route.js';
 import ProductManager from './dao/managers/ProductManager.js';
-import productModel from './routes/dbProducts.route.js';
+import productModel from './dao/models/product.model.js';
+import dbPorRouter from './routes/dbProducts.route.js';
 import products from './products.js';
 
 
@@ -40,6 +41,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', realtimeproducts);
 app.use('/api/products', productRoute);
 app.use('/api/carts', cartRoute);
+app.use('/products', dbPorRouter);
 
 
 
