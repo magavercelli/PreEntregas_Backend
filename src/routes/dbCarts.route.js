@@ -71,7 +71,7 @@ router.delete('/carts/:cid/products/:pid', async (req,res)=> {
         res.json(result);
     } catch (error) {
         console.error('Error deleting product from cart:', error);
-        res.sedn({ 
+        res.send({ 
             status: 'error', 
             msg: 'Internal Server Error'
          });

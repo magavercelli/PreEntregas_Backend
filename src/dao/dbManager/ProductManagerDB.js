@@ -4,7 +4,7 @@ import productModel from "../models/product.model.js";
 export default class ProductManagerDB {
     
     getProducts = async (req,res) => {
-      try {
+      
         const { limit = 10, page = 1, sort = '', query = '' } = req.query;
         const options = {
             page: parseInt(page, 10),
@@ -14,28 +14,29 @@ export default class ProductManagerDB {
 
         let filter = {};
         if (query) {
-            filter = { title: { $regex: query, $options: 'i' } },
-            { category: { $regex: query, $options: 'i' } },
-            { status: query.toLowerCase() === 'true' }
-        }
+          filter = {
+              $or: [
+                  { title: { $regex: query, $options: 'i' } },
+                  { category: { $regex: query, $options: 'i' } },
+                  { status: query.toLowerCase() === 'true' }
+              ]
+          };
+      }
+
 
         const result = await productModel.paginate(filter, options);
-        res.json({
-            status: 'success',
-            payload: result.docs,
-            totalPages: result.totalPages,
-            prevPage: result.prevPage,
-            nextPage: result.nextPage,
-            page: result.page,
-            hasPrevPage: result.hasPrevPage,
-            hasNextPage: result.hasNextPage,
-            prevLink: result.prevPage ? `/api/products?page=${result.prevPage}` : null,
-            nextLink: result.nextPage ? `/api/products?page=${result.nextPage}` : null
+        res.render('products', {
+           products: result.docs,
+           totalPages: result.totalPages,
+           prevPage: result.prevPage,
+           nextPage: result.nextPage,
+           page: result.page,
+           hasPrevPage: result.hasPrevPage,
+           hasNextPage: result.hasNextPage,
+           prevLink: result.prevPage ? `/products?page=${result.prevPage}` : null,
+           nextLink: result.nextPage ? `/products?page=${result.nextPage}` : null
         });
-    } catch (error) {
-        console.error('Error getting products:', error);
-        throw error;
-    }
+        
     }
 
     addProduct = async (product) => {

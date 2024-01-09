@@ -7,20 +7,17 @@ import { realtimeproducts } from './routes/realtimeproducts.route.js';
 import { productRoute } from './routes/product.route.js';
 import { cartRoute } from './routes/cart.route.js';
 import ProductManager from './dao/managers/ProductManager.js';
+import ProductManagerDB from './dao/dbManager/ProductManagerDB.js';
 import productModel from './dao/models/product.model.js';
-import dbPorRouter from './routes/dbProducts.route.js';
-import products from './products.js';
 
 
 const MONGO = 'mongodb+srv://magabrielavercelli:AitYC66JzKrHxPUN@cluster0.azjq6df.mongodb.net/Ecommerce';
+
 mongoose.connect(MONGO)
-.then(() => {
-    console.log('Conexión a MongoDB exitosa');
-    productModel.insertMany(products)
-        .then(() => console.log('Productos insertados'))
-        .catch(err => console.error('Error al insertar productos:', err));
-})
-.catch(err => console.error('Error al conectar a MongoDB:', err));
+    .then(() => {
+        console.log('Conexión a MongoDB exitosa');
+    })
+    .catch(err => console.error('Error al conectar a MongoDB:', err));
 
 
 const PORT = 8080;
@@ -28,6 +25,7 @@ const app = express();
 
 
 const prod = new ProductManager();
+const prodDB = new ProductManagerDB();
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
@@ -41,14 +39,14 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', realtimeproducts);
 app.use('/api/products', productRoute);
 app.use('/api/carts', cartRoute);
-app.use('/products', dbPorRouter);
+
 
 
 
 app.get('/products', async (req, res) => {
     try {
       const limit = req.query.limit;
-      const productsData = await prod.getProducts(); 
+      const productsData = await prodDB.getProducts(req,res); 
   
       if (limit) {
         const productFilter = productsData.slice(0, limit);
@@ -64,7 +62,7 @@ app.get('/products', async (req, res) => {
 
   app.get('/products/:pid', async (req, res) => {
     const productId = req.params.pid;
-    const product = await prod.getProductById(productId);
+    const product = await prodDB.getProductById(productId);
     res.render('product', { product: product });
 });
 
