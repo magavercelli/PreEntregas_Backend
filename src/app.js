@@ -45,15 +45,29 @@ app.use('/api/carts', cartRoute);
 
 app.get('/products', async (req, res) => {
     try {
-      const limit = req.query.limit;
+      const limit = parseInt(req.query.limit, 10);
+      const page = parseInt(req.query.page, 10);
+    
       const productsData = await prodDB.getProducts(req,res); 
   
-      if (limit) {
-        const productFilter = productsData.slice(0, limit);
-        return res.render('products', { products: productFilter });
-      }
-  
-      return res.render('products', { products: productsData });
+      if (productsData && productsData.products) {
+        // Renderiza la vista de productos con la información de paginación
+        return res.render('products', {
+            products: productsData.products,
+            totalPages: productsData.totalPages,
+            prevPage: productsData.prevPage,
+            nextPage: productsData.nextPage,
+            page: productsData.page,
+            hasPrevPage: productsData.hasPrevPage,
+            hasNextPage: productsData.hasNextPage,
+            prevLink: productsData.prevLink,
+            nextLink: productsData.nextLink
+        });
+    }
+
+    // Si no se proporcionan limit y page, simplemente renderiza la vista de productos
+    return res.render('products', { products: [] });
+
     } catch (error) {
       console.log('Error:', error);
       res.status(500).send('Internal Server Error');
