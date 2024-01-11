@@ -1,14 +1,15 @@
 import { Router } from 'express';
-import productModel from '../dao/models/product.model.js';
 import ProductManagerDB from '../dao/dbManager/ProductManagerDB.js';
 
 const router = Router();
-const prod = new ProductManagerDB();
+const productManager = new ProductManagerDB();
 
 router.get('/', async (req,res)=> {
     try {
-        const products = await prod.getProducts();
-        res.render('products', { products: JSON.parse(JSON.stringify(products)) });
+        const { limit = 10, page = 1, sort = '', query = '' } = req.query;
+        const products = await productManager.getProducts( limit, page, sort, query );
+        // res.render('products', { products: JSON.parse(JSON.stringify(products)) });
+        res.send({products});
 
     } catch (error) {
         console.log('Error:', error);
@@ -16,10 +17,10 @@ router.get('/', async (req,res)=> {
     }
 });
 
-router.get('/products/:pid', async (req, res) => {
+router.get('/:pid', async (req, res) => {
     const productId = req.params.pid;
-    const product = await prod.getProductById(productId);
-    res.render('product', { product: JSON.parse(JSON.stringify(product)) });
+    const product = await productManager.getProductById(productId);
+    res.send({ product });
 });
 
 router.post('/', async(req,res)=> {
@@ -40,7 +41,7 @@ router.post('/', async(req,res)=> {
         category
     }
 
-    const result = await productModel.create(newProduct)
+    const result = await productManager.addProduct(newProduct);
     res.send({result});
 })
 

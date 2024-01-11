@@ -4,14 +4,19 @@
         <h2>Lista de Productos: </h2>
         <div id="products-add">
             <ul>
-                {{#each products}}
+                {{#each products.docs}}
                     <li>
                         <a href="/products/{{this._id}}">{{this.title}}</a>
-                        <p>Producto: {{this.title}}</p>
                         <p>Descripción: {{this.description}}</p>
                         <p>Precio: {{this.price}}</p>
                         <p>Categoría: {{this.category}}</p>
-                         <button>Agregar al carrito</button>
+                        
+                    <form action="/api/carts" method="post">
+                        <input type="hidden" name="product" value="{{ this._id }}">
+                        <input type="hidden" name="quantity" value=1>
+                        <input type="submit" value="Agregar al Carrito">
+                    </form>
+                    <a href="/products/{{ this._id }}">Ver Carrito</a>
                     </li>
                 {{/each}}
             </ul>

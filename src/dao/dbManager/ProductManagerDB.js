@@ -3,12 +3,13 @@ import productModel from "../models/product.model.js";
 
 export default class ProductManagerDB {
     
-    getProducts = async (req,res) => {
+    getProducts = async (limit, page, sort, query) => {
       
-        const { limit = 10, page = 1, sort = '', query = '' } = req.query;
+        
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limit, 10),
+            lean: true,
             sort: sort === 'desc' ? { price: -1 } : sort === 'asc' ? { price: 1 } : null
         };
 
@@ -25,17 +26,18 @@ export default class ProductManagerDB {
 
 
         const result = await productModel.paginate(filter, options);
-        res.render('products', {
-           products: result.docs,
-           totalPages: result.totalPages,
-           prevPage: result.prevPage,
-           nextPage: result.nextPage,
-           page: result.page,
-           hasPrevPage: result.hasPrevPage,
-           hasNextPage: result.hasNextPage,
-           prevLink: result.prevPage ? `/products?page=${result.prevPage}` : null,
-           nextLink: result.nextPage ? `/products?page=${result.nextPage}` : null
-        });
+        return result;
+        // res.render('products', {
+        //    products: result.docs,
+        //    totalPages: result.totalPages,
+        //    prevPage: result.prevPage,
+        //    nextPage: result.nextPage,
+        //    page: result.page,
+        //    hasPrevPage: result.hasPrevPage,
+        //    hasNextPage: result.hasNextPage,
+        //    prevLink: result.prevPage ? `/products?page=${result.prevPage}` : null,
+        //    nextLink: result.nextPage ? `/products?page=${result.nextPage}` : null
+        // });
         
     }
 

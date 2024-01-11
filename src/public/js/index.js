@@ -1,3 +1,4 @@
+
 const socket = io();
 
 
@@ -18,4 +19,4 @@ socket.on('products', function(data){
         div.appendChild(listUl);
     });
 })
-  
+

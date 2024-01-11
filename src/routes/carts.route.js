@@ -1,4 +1,4 @@
-import {Router} from 'mongoose';
+import {Router} from 'express';
 import CartManagerDB from '../dao/dbManager/CartManagerDB.js';
 
 const router = Router();
@@ -9,7 +9,8 @@ router.get('/', async (req, res)=> {
     const cart = await cartManagerDb.getCarts();
     res.send({
         status: 'succes',
-        msg: `get ${cart} succesefully`
+        msg: `get ${cart} succesefully`,
+        cart
     })
     
 })
@@ -32,14 +33,6 @@ router.get('/:cid', async (req,res) => {
     }
 
 })
-
-router.get('/carts/:cid', async (req, res) => {
-    const cartId = req.params.cid;
-    const cart = await cartManagerDb.getCartById(cartId);
-    res.render('cart', { cart: cart });
-});
-
-
 router.post ('/', async (req,res)=> {
     const cart = await cartManagerDb.addNewCart();
     res.send({
@@ -125,3 +118,5 @@ router.delete('/carts:cid', async (req, res) => {
         });
     }
 });
+
+export default router;
