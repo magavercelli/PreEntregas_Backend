@@ -27,18 +27,7 @@ export default class ProductManagerDB {
 
         const result = await productModel.paginate(filter, options);
         return result;
-        // res.render('products', {
-        //    products: result.docs,
-        //    totalPages: result.totalPages,
-        //    prevPage: result.prevPage,
-        //    nextPage: result.nextPage,
-        //    page: result.page,
-        //    hasPrevPage: result.hasPrevPage,
-        //    hasNextPage: result.hasNextPage,
-        //    prevLink: result.prevPage ? `/products?page=${result.prevPage}` : null,
-        //    nextLink: result.nextPage ? `/products?page=${result.nextPage}` : null
-        // });
-        
+       
     }
 
     addProduct = async (product) => {

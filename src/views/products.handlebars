@@ -1,4 +1,10 @@
 <div>
+    <p> Bienvenido {{user.full_name}}!!!</p>
+    <p>Rol: {{user.role}}</p>
+    <a href="/api/session/logout">Salir</a>
+</div>
+
+<div>
     {{#if products}}
         <!-- Código para mostrar la lista de productos -->
         <h2>Lista de Productos: </h2>
