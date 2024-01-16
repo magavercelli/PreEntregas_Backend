@@ -30,7 +30,7 @@ router.get('/login', publicAccess, (req,res)=>{
     res.render('login')
 })
 router.get('/', privateAccess, (req,res)=>{
-    res.render('profile', {user:req.session.user})
+    res.render('profile', {user:req.session.user}) //sacar products es algo de acá
 })
 
 router.get('/', async (req,res) => {
@@ -43,7 +43,7 @@ router.get('/realtimeproducts', async (req,res)=> {
     res.render('realtimeproducts');
 })
 
-router.get('/products', publicAccess, async (req, res) => {
+router.get('/products', privateAccess, async (req, res) => { //cambiar a prublic?
     try {
         const { limit = 10, page = 1, sort = '', query = ''} = req.query;
         const products = await productManager.getProducts(limit, page, sort, query);
@@ -58,7 +58,7 @@ router.get('/products', publicAccess, async (req, res) => {
 router.get('/products/:pid', async (req, res) => {
     const productId = req.params.pid;
     const product = await productManager.getProductById(productId);
-    res.render('product', { product: product });
+    res.render('products', { product: product });
   });
  
   router.get('/carts/:cid', async (req, res) => {

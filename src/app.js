@@ -42,9 +42,10 @@ app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
 app.use('/', viewsRoute);
-app.use('api/sessions', sessionRoute);
+app.use('/api/sessions', sessionRoute);
 app.use('/api/products', productRoute);
 app.use('/api/carts', cartRoute);
+
 
 
 const httpServer = app.listen(PORT, () => console.log (`Servidor funcionando en el puerto: ${PORT}`))
