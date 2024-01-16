@@ -30,7 +30,7 @@ router.get('/login', publicAccess, (req,res)=>{
     res.render('login')
 })
 router.get('/', privateAccess, (req,res)=>{
-    res.render('profile', {user:req.session.user}) //sacar products es algo de acá
+    res.render('profile', {user:req.session.user}) 
 })
 
 router.get('/', async (req,res) => {
@@ -47,7 +47,7 @@ router.get('/products', privateAccess, async (req, res) => { //cambiar a prublic
     try {
         const { limit = 10, page = 1, sort = '', query = ''} = req.query;
         const products = await productManager.getProducts(limit, page, sort, query);
-        return res.render('products', {products});
+        return res.render('products', {products , user:req.session.user});
     } catch (error) {
         console.log(`Error: ${error}`);
         res.status(500).send('Internal Server error');

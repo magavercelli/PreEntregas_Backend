@@ -24,9 +24,6 @@ router.post("/register", async (req,res)=>{
          password
      }
 
-     if (user.email === 'adminCoder@coder.com' && user.password === 'adminCod3r123') {
-        user.isAdmin = true;
-    }
  
      let result = await userModel.create(user);
      res.send({
@@ -48,18 +45,17 @@ router.post("/register", async (req,res)=>{
          })
      }
     
-     const role = 'usuario';
-
-     if (user.isAdmin) {
+     let role = 'usuario';
+     
+     if (user.email === 'adminCoder@coder.com' && user.password === 'adminCod3r123') {
         role = 'admin';
     }
-
-     req.session.role = role;
-
+    
      req.session.user = {
         full_name: `${user.first_name} ${user.last_name}`,
         email: user.email,
-        age: user.age
+        age: user.age,
+        role: role
     };
 
     console.log(`Inicio de sesión exitoso para el usuario: ${email}`);
