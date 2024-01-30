@@ -80,7 +80,9 @@ router.get('/products/:pid', async (req, res) => {
     
 });
 
-
+router.get('/resetPassword', (req,res)=> {
+    res.render('resetPassword');
+})
 
 
 export { router as viewsRoute};

@@ -2,6 +2,8 @@ import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
+import passport from 'passport';
+
 import {engine} from 'express-handlebars';
 import {Server} from 'socket.io';
 import __dirname from './utils.js';
@@ -9,6 +11,9 @@ import { viewsRoute } from './routes/views.route.js';
 import productRoute  from './routes/products.route.js';
 import cartRoute  from './routes/carts.route.js';
 import sessionRoute from './routes/sessions.route.js';
+import initializePassport from './config/passport.config.js';
+
+
 
 
 const MONGO = 'mongodb+srv://magabrielavercelli:AitYC66JzKrHxPUN@cluster0.azjq6df.mongodb.net/Ecommerce';
@@ -27,6 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'));
 
+
 app.use(session({
     store: new MongoStore({
         mongoUrl: MONGO,
@@ -36,6 +42,11 @@ app.use(session({
     resave:false,
     saveUninitialized:false
 }))
+
+initializePassport()
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
