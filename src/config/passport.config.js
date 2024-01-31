@@ -2,6 +2,7 @@ import passport from 'passport';
 import local from 'passport-local';
 
 import userModel from '../dao/models/user.model.js';
+import cartsModel from '../dao/models/cart.model.js';
 import { createHash, validatePassword } from '../utils.js';
 
 const LocalStrategy = local.Strategy;
@@ -18,6 +19,9 @@ const initializePassport = () => {
                     console.log('Usuario ya registrado');
                     return done(null,false)
                 }
+
+            const newCart = await cartsModel.create({});
+            const cartId = newCart._id;
 
                 const newUser = {
                     first_name,
