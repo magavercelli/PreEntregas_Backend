@@ -34,7 +34,7 @@ const router = Router();
 //      })
 //  })
 
-router.post('register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}),
+router.post('/register', passport.authenticate('register', {failureRedirect: '/api/sessions/failregister'}),
 async (req,res)=> {
     res.send({
         status: 'success', 
@@ -42,7 +42,7 @@ async (req,res)=> {
     })
 })
 
-router.get('failregister', async (req,res)=> {
+router.get('/failregister', async (req,res)=> {
     console.log('Registration has failed');
     res.send({error:  "Registration failed!"})
 
@@ -93,7 +93,8 @@ router.get('failregister', async (req,res)=> {
 //     })
 //  })
 
-router.post('/login', passport.authenticate('login', {failureRedirect: '/api/sessions/faillogin'}),
+router.post('/login', passport.authenticate('login', {
+    failureRedirect: '/api/sessions/faillogin'}),
 async(req,res)=> {
     if(!req.user){
         return res.status(400).send({status:'error'})
@@ -110,6 +111,16 @@ async(req,res)=> {
 router.get('/faillogin', (req,res)=> {
     res.send({error: 'fail login'})
 })
+
+router.get('/github', passport.authenticate('github', {scope: ['user:email']}),
+async (req,res)=> {});
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}),
+async (req,res)=> {
+    req.session.user = req.user
+    res.redirect('/')
+});
+
  router.get('/logout', async (req,res)=> {
     req.session.destroy( err => {
         if(err){

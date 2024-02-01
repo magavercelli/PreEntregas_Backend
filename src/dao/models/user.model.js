@@ -5,20 +5,20 @@ const usersCollection = 'Users';
 const schema = new mongoose.Schema({
     first_name: {
         type: String,
-        required: true
+        // required: true
     },
     last_name: {
         type: String,
-        required: true
+        // required: true
     },
     email: {
         type: String,
-        required: true
+        // required: true
     },
     age: Number,
     password:{
         type: String,
-        required: true
+        // required: true
     },
     role: {
         type: String,
